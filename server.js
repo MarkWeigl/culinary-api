@@ -96,13 +96,13 @@ app.put('/recipes/:id', (req, res) => {
   Recipes
     .findByIdAndUpdate(req.params.id, {$set: updated}, {new: true})
     .exec()
-    .then(updatedrecipe => res.status(201).json(updatedrecipe.apiRepr()))
+    .then(updatedrecipe => res.status(200).json(updatedrecipe.apiRepr()))
     .catch(err => res.status(500).json({message: 'Something went wrong'}));
 });
 
 
 app.delete('/:id', (req, res) => {
-  Recipess
+  Recipes
     .findByIdAndRemove(req.params.id)
     .exec()
     .then(() => {
