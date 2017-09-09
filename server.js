@@ -19,7 +19,7 @@ app.get('/recipes', (req, res) => {
     .find()
     .exec()
     .then(recipes => {
-      res.json(recipes.map(recipe => recipe.apiRepr()));
+      res.json(recipes)
     })
     .catch(err => {
       console.error(err);
@@ -31,7 +31,7 @@ app.get('/recipes/:id', (req, res) => {
   Recipes
     .findById(req.params.id)
     .exec()
-    .then(recipe => res.json(recipe.apiRepr()))
+    .then(recipe => res.json(recipe))
     .catch(err => {
       console.error(err);
       res.status(500).json({error: 'something went horribly awry'});
