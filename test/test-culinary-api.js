@@ -108,19 +108,20 @@ describe('Recipes API resource', function() {
         .post('/recipes')
         .send(newRecipe)
         .then(function(res) {
+          console.log(JSON.stringify(res.body));
           res.should.have.status(201);
           res.should.be.json;
           res.body.should.be.a('object');
           res.body.should.include.keys(
             'name', 'description');
           res.body.name.should.equal(newRecipe.name);
-          res.body.id.should.not.be.null;
+          res.body._id.should.not.be.null;
           res.body.description.should.equal(newRecipe.description);
-          return Recipe.findById(res.body.id).exec();
+          return Recipes.findById(res.body._id).exec();
         })
         .then(function(post) {
           post.name.should.equal(newRecipe.name);
-          post.description.should.equal(description.content);
+          post.description.should.equal(newRecipe.description);
         });
     });
   });
@@ -133,7 +134,7 @@ describe('Recipes API resource', function() {
         description: 'eggs for breakfast',
       };
 
-      return Recipe
+      return Recipes
         .findOne()
         .exec()
         .then(post => {
@@ -164,7 +165,7 @@ describe('Recipes API resource', function() {
 
       let recipe;
 
-      return Recipe
+      return Recipes
         .findOne()
         .exec()
         .then(_post => {
@@ -173,7 +174,7 @@ describe('Recipes API resource', function() {
         })
         .then(res => {
           res.should.have.status(204);
-          return RecipeB.findById(post.id);
+          return Recipes.findById(post.id);
         })
         .then(_post => {
           should.not.exist(_post);
