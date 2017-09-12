@@ -62,16 +62,16 @@ describe('Recipes API resource', function() {
         .then(_res => {
           res = _res;
           res.should.have.status(200);
-          res.body.should.have.length.of.at.least(1);
+          res.body.length.should.be.above(0);
 
           return Recipes.count();
         })
         .then(count => {
-          res.body.should.have.length.of(count);
+          res.body.length.should.equal(count);
         });
     });
 
-    it('should return posts with right fields', function() 
+    it('should return posts with right fields', function(){ 
       let resPost;
       return chai.request(app)
         .get('/recipes')
