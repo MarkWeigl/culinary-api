@@ -27,7 +27,7 @@ function seedRecipeData() {
   for (let i=1; i<=10; i++) {
     seedData.push({
       name: faker.lorem.text(),
-      decription: faker.lorem.text()
+      description: faker.lorem.text()
     });
   }
 
@@ -84,10 +84,10 @@ describe('Recipes API resource', function() {
 
           res.body.forEach(function(post) {
             post.should.be.a('object');
-            post.should.include.keys('name', 'description');
+            post.should.include.keys('name','description');
           });
           resPost = res.body[0];
-          return Recipes.findById(resPost.id).exec();
+          return Recipes.findById(resPost._id).exec();
         })
         .then(post => {
           resPost.name.should.equal(post.name);
@@ -108,7 +108,6 @@ describe('Recipes API resource', function() {
         .post('/recipes')
         .send(newRecipe)
         .then(function(res) {
-          console.log(JSON.stringify(res.body));
           res.should.have.status(201);
           res.should.be.json;
           res.body.should.be.a('object');
@@ -138,20 +137,20 @@ describe('Recipes API resource', function() {
         .findOne()
         .exec()
         .then(post => {
-          updateData.id = recipe.id;
+          updateData.id = post._id;
 
           return chai.request(app)
-            .put(`/recipes/${recipe.id}`)
+            .put(`/recipes/${post._id}`)
             .send(updateData);
         })
         .then(res => {
-          res.should.have.status(201);
+          res.should.have.status(200);
           res.should.be.json;
           res.body.should.be.a('object');
           res.body.name.should.equal(updateData.name);
           res.body.description.should.equal(updateData.description);
 
-          return Recipe.findById(res.body.id).exec();
+          return Recipes.findById(res.body.id).exec();
         })
         .then(post => {
           post.name.should.equal(updateData.name);
@@ -163,18 +162,18 @@ describe('Recipes API resource', function() {
   describe('DELETE endpoint', function() {
       it('should delete a recipe by id', function() {
 
-      let recipe;
+      let post;
 
       return Recipes
         .findOne()
         .exec()
         .then(_post => {
           post = _post;
-          return chai.request(app).delete(`/recipes/${recipe.id}`);
+          return chai.request(app).delete(`/recipes/${post._id}`);
         })
         .then(res => {
           res.should.have.status(204);
-          return Recipes.findById(post.id);
+          return Recipes.findById(post._id);
         })
         .then(_post => {
           should.not.exist(_post);

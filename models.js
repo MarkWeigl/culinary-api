@@ -7,6 +7,7 @@ const recipeSchema = mongoose.Schema({
 
 recipeSchema.methods.apiRepr = function() {
   return {
+    id: this._id,
     name: this.name,
     description: this.description
   };
