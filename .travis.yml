@@ -1,8 +1,11 @@
-const cors = require('cors');
-const {CLIENT_ORIGIN} = require('./config');
-
-app.use(
-    cors({
-        origin: CLIENT_ORIGIN
-    })
-);
+language: node_js
+node_js: node
+ 
+deploy:
+  provider: heroku
+  api_key: 
+    secure: f4232192-c6a9-4cb5-9d0b-00d5c869770f
+  app: stormy-mesa-11961
+  skip_cleanup: true
+  on:
+    repo: MarkWeigl/culinary-api
