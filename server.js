@@ -1,15 +1,20 @@
-const bodyParser = require('body-parser');
 const express = require('express');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
-
-const {DATABASE_URL, PORT} = require('./config');
+const cors = require('cors');
+const {DATABASE_URL, PORT, CLIENT_ORIGIN} = require('./config');
 const {Recipes} = require('./models');
 
 const app = express();
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
+app.use(
+    cors({
+        origin: CLIENT_ORIGIN
+    })
+);
 
 mongoose.Promise = global.Promise;
 
