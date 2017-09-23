@@ -27,7 +27,13 @@ function seedRecipeData() {
   for (let i=1; i<=10; i++) {
     seedData.push({
       name: faker.lorem.text(),
-      description: faker.lorem.text()
+      description: faker.lorem.text(),
+      course: faker.lorem.text(),
+      cuisine: faker.lorem.text(),
+      ingredients: faker.lorem.text(),
+      steps: faker.lorem.text(),
+      servings: faker.lorem.text(),
+      servingsize: faker.lorem.text() 
     });
   }
 
@@ -84,7 +90,8 @@ describe('Recipes API resource', function() {
 
           res.body.forEach(function(post) {
             post.should.be.a('object');
-            post.should.include.keys('name','description');
+            post.should.include.keys('name','description', 'course', 'cuisine', 
+              'ingredients', 'steps', 'servings', 'servingsize');
           });
           resPost = res.body[0];
           return Recipes.findById(resPost._id).exec();
@@ -92,6 +99,13 @@ describe('Recipes API resource', function() {
         .then(post => {
           resPost.name.should.equal(post.name);
           resPost.description.should.equal(post.description);
+          resPost.course.should.equal(post.course);
+          resPost.cuisine.should.equal(post.cuisine);
+          resPost.ingredients.should.equal(post.ingredients);
+          resPost.steps.should.equal(post.steps);
+          resPost.servings.should.equal(post.servings);
+          resPost.servingsize.should.equal(post.servingsize);
+
         });
     });
   });
@@ -101,7 +115,13 @@ describe('Recipes API resource', function() {
 
       const newRecipe = {
           name: faker.lorem.sentence(),
-          description: faker.lorem.text()
+          description: faker.lorem.text(),
+          course: faker.lorem.text(),
+          cuisine: faker.lorem.text(),
+          ingredients: faker.lorem.text(),
+          steps: faker.lorem.text(),
+          servings: faker.lorem.text(),
+          servingsize: faker.lorem.text() 
       };
 
       return chai.request(app)
@@ -122,6 +142,12 @@ describe('Recipes API resource', function() {
         .then(function(post) {
           post.name.should.equal(newRecipe.name);
           post.description.should.equal(newRecipe.description);
+          post.course.should.equal(newRecipe.course);
+          post.cuisine.should.equal(newRecipe.cuisine);
+          post.ingredients.should.equal(newRecipe.ingredients);
+          post.steps.should.equal(newRecipe.steps);
+          post.servings.should.equal(newRecipe.servings);
+          post.servingsize.should.equal(newRecipe.servingsize);
         });
     });
   });
@@ -131,7 +157,7 @@ describe('Recipes API resource', function() {
       it('should update fields you send over', function() {
       const updateData = {
         name: 'eggs',
-        description: 'eggs for breakfast',
+        description: 'eggs for breakfast'
       };
 
       return Recipes
@@ -150,23 +176,11 @@ describe('Recipes API resource', function() {
           res.body.should.be.a('object');
           res.body.name.should.equal(updateData.name);
           res.body.description.should.equal(updateData.description);
-          res.body.course.should.equal(updateData.course);
-          res.body.cuisine.should.equal(updateData.cuisine);
-          res.body.ingredients.should.equal(updateData.ingredients);
-          res.body.steps.should.equal(updateData.steps);
-          res.body.servings.should.equal(updateData.servings);
-          res.body.servingsize.should.equal(updateData.servingsize);
-        return Recipes.findById(res.body.id).exec();
+          return Recipes.findById(res.body.id).exec();
         })
         .then(post => {
           post.name.should.equal(updateData.name);
           post.description.should.equal(updateData.description);
-          post.course.should.equal(updateData.course);
-          post.cuisine.should.equal(updateData.cuisine);
-          post.ingredients.should.equal(updateData.ingredients);
-          post.steps.should.equal(updateData.steps);
-          post.servings.should.equal(updateData.servings);
-          post.servingsize.should.equal(updateData.servingsize);
         });
     });
   });

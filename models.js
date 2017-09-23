@@ -2,7 +2,14 @@ const mongoose = require('mongoose');
 
 const recipeSchema = mongoose.Schema({
   name: {type: String, required: true},
-  description: {type: String} 
+  description: {type: String},
+  course: {type: String},
+  cuisine: {type: String},
+  ingredients: {type: String},
+  steps: {type: String},
+  servings: {type: String},
+  servingsize: {type: String}
+
 });
 
 recipeSchema.methods.apiRepr = function() {
@@ -13,7 +20,7 @@ recipeSchema.methods.apiRepr = function() {
     course: this.course,
     cuisine: this.cuisine,
     ingredients: this.ingredients,
-    steps: this.steps
+    steps: this.steps,
     servings: this.servings,
     servingsize: this.servingsize
   };
