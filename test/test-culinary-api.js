@@ -112,7 +112,8 @@ describe('Recipes API resource', function() {
           res.should.be.json;
           res.body.should.be.a('object');
           res.body.should.include.keys(
-            'name', 'description');
+            'name', 'description', 'course', 'cuisine', 'ingredients', 'steps',
+            'servings', 'servingsize');
           res.body.name.should.equal(newRecipe.name);
           res.body._id.should.not.be.null;
           res.body.description.should.equal(newRecipe.description);
