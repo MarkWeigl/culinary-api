@@ -149,12 +149,23 @@ describe('Recipes API resource', function() {
           res.body.should.be.a('object');
           res.body.name.should.equal(updateData.name);
           res.body.description.should.equal(updateData.description);
-
-          return Recipes.findById(res.body.id).exec();
+          res.body.course.should.equal(updateData.course);
+          res.body.cuisine.should.equal(updateData.cuisine);
+          res.body.ingredients.should.equal(updateData.ingredients);
+          res.body.steps.should.equal(updateData.steps);
+          res.body.servings.should.equal(updateData.servings);
+          res.body.servingsize.should.equal(updateData.servingsize);
+        return Recipes.findById(res.body.id).exec();
         })
         .then(post => {
           post.name.should.equal(updateData.name);
           post.description.should.equal(updateData.description);
+          post.course.should.equal(updateData.course);
+          post.cuisine.should.equal(updateData.cuisine);
+          post.ingredients.should.equal(updateData.ingredients);
+          post.steps.should.equal(updateData.steps);
+          post.servings.should.equal(updateData.servings);
+          post.servingsize.should.equal(updateData.servingsize);
         });
     });
   });
