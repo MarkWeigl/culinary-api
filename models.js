@@ -9,7 +9,13 @@ recipeSchema.methods.apiRepr = function() {
   return {
     id: this._id,
     name: this.name,
-    description: this.description
+    description: this.description,
+    course: this.course,
+    cuisine: this.cuisine,
+    ingredients: this.ingredients,
+    steps: this.steps
+    servings: this.servings,
+    servingsize: this.servingsize
   };
 }
 
