@@ -58,7 +58,13 @@ app.post('/recipes', (req, res) => {
   Recipes
     .create({
       name: req.body.name,
-      description: req.body.description
+      description: req.body.description,
+      course: req.body.course,
+      cuisine: req.body.cuisine,
+      ingredients: req.body.ingredients,
+      steps: req.body.steps,
+      servings: req.body.servings,
+      servingsize: req.body.servingsize
       })
     .then(recipes => res.status(201).json(recipes))
     .catch(err => {
