@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -5,6 +6,10 @@ const morgan = require('morgan');
 const cors = require('cors');
 const {DATABASE_URL, PORT, CLIENT_ORIGIN} = require('./config');
 const {Recipes} = require('./models');
+const passport = require('passport');
+
+const {router: usersRouter} = require('./users');
+const {router: authRouter, localStrategy, jwtStrategy} = require('./auth');
 
 const app = express();
 
@@ -17,7 +22,21 @@ app.use(
 );
 
 mongoose.Promise = global.Promise;
+app.use(passport.initialize());
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 
+app.use('/api/users/', usersRouter);
+app.use('/api/auth/', authRouter);
+
+app.get('/api/protected',
+    passport.authenticate('jwt', {session: false}),
+    (req, res) => {
+        return res.json({
+            data: 'rosebud'
+        });
+    }
+);
 
 app.get('/recipes', (req, res) => {
   Recipes
@@ -90,7 +109,7 @@ app.delete('/recipes/:id', (req, res) => {
 
 
 app.put('/recipes/:id', (req, res) => {
-  if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
+  if (!(req.params.id && req.body._id && req.params.id === req.body._id)) {
     res.status(400).json({
       error: 'Request path id and request body id values must match'
     });
