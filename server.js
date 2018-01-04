@@ -29,86 +29,85 @@ passport.use(jwtStrategy);
 app.use('/users/', usersRouter);
 app.use('/auth/', authRouter);
 
-app.get('/api/protected',
-    passport.authenticate('jwt', {session: false}),
-    (req, res) => {
-        return res.json({
-            data: 'rosebud'
-        });
-    }
-);
-
-app.get('/recipes', (req, res) => {
-  Recipes
-    .find()
-    .exec()
-    .then(recipes => {
-      res.json(recipes)
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({error: 'something went terribly wrong'});
-    });
-});
-
-app.get('/recipes/:id', (req, res) => {
-  Recipes
-    .findById(req.params.id)
-    .exec()
-    .then(recipe => res.json(recipe))
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({error: 'something went horribly awry'});
-    });
-});
-
-app.post('/recipes', (req, res) => {
-  const requiredFields = ['name', 'description'];
-  let field;
-  for (let i=0; i<requiredFields.length; i++) {
-    field = requiredFields[i];
-    if (!(field in req.body)) {
-      const message = `Missing \`${field}\` in request body`
-      console.error(message);
-      return res.status(400).send(message);
-    }
-  }
-
-  Recipes
-    .create({
-      name: req.body.name,
-      description: req.body.description,
-      course: req.body.course,
-      cuisine: req.body.cuisine,
-      ingredients: req.body.ingredients,
-      steps: req.body.steps,
-      servings: req.body.servings,
-      servingsize: req.body.servingsize
+app.get('/recipes', 
+  passport.authenticate('jwt', {session: false}),
+  (req, res) => {
+    Recipes
+      .find()
+      .exec()
+      .then(recipes => {
+        res.json(recipes)
       })
-    .then(recipes => res.status(201).json(recipes))
-    .catch(err => {
+      .catch(err => {
         console.error(err);
-        res.status(500).json({error: 'Something went wrong'});
-    });
+        res.status(500).json({error: 'something went terribly wrong'});
+      });
+});
 
+app.get('/recipes/:id', 
+  passport.authenticate('jwt', {session: false}),
+    (req, res) => {
+    Recipes
+      .findById(req.params.id)
+      .exec()
+      .then(recipe => res.json(recipe))
+      .catch(err => {
+        console.error(err);
+        res.status(500).json({error: 'something went horribly awry'});
+      });
+});
+
+app.post('/recipes', 
+  passport.authenticate('jwt', {session: false}),
+  (req, res) => {
+    const requiredFields = ['name', 'description'];
+    let field;
+    for (let i=0; i<requiredFields.length; i++) {
+      field = requiredFields[i];
+      if (!(field in req.body)) {
+        const message = `Missing \`${field}\` in request body`
+        console.error(message);
+        return res.status(400).send(message);
+      }
+    }
+
+    Recipes
+      .create({
+        name: req.body.name,
+        description: req.body.description,
+        course: req.body.course,
+        cuisine: req.body.cuisine,
+        ingredients: req.body.ingredients,
+        steps: req.body.steps,
+        servings: req.body.servings
+      })
+      .then(recipes => res.status(201).json(recipes))
+      .catch(err => {
+          console.error(err);
+          res.status(500).json({error: 'Something went wrong'});
+      });
 });
 
 
-app.delete('/recipes/:id', (req, res) => {
-  Recipes
-    .findByIdAndRemove(req.params.id)
-    .exec()
-    .then(() => {
-      res.status(204).json({message: 'success'});
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({error: 'something went terribly wrong'});
-    });
-});
+app.delete('/recipes/:id', 
+  passport.authenticate('jwt', {session: false}),
+    (req, res) => {
+    Recipes
+      .findByIdAndRemove(req.params.id)
+      .exec()
+      .then(() => {
+        res.status(204).json({message: 'success'});
+      })
+      .catch(err => {
+        console.error(err);
+        res.status(500).json({error: 'something went terribly wrong'});
+      });
+  });
 
 
-app.put('/recipes/:id', (req, res) => {
+app.put('/recipes/:id', 
+
+  (req, res) => {
   if (!(req.params.id && req.body._id && req.params.id === req.body._id)) {
     res.status(400).json({
       error: 'Request path id and request body id values must match'
@@ -116,7 +115,7 @@ app.put('/recipes/:id', (req, res) => {
   }
 
   const updated = {};
-  const updateableFields = ['name', 'description'];
+  const updateableFields = ['name', 'description', 'course', 'cuisine', 'ingredients', 'steps', 'servings'];
   updateableFields.forEach(field => {
     if (field in req.body) {
       updated[field] = req.body[field];
@@ -131,14 +130,16 @@ app.put('/recipes/:id', (req, res) => {
 });
 
 
-app.delete('/:id', (req, res) => {
-  Recipes
-    .findByIdAndRemove(req.params.id)
-    .exec()
-    .then(() => {
-      console.log(`Deleted recipe with id \`${req.params.ID}\``);
-      res.status(204).end();
-    });
+app.delete('/:id', 
+  passport.authenticate('jwt', {session: false}),
+    (req, res) => {
+    Recipes
+      .findByIdAndRemove(req.params.id)
+      .exec()
+      .then(() => {
+        console.log(`Deleted recipe with id \`${req.params.ID}\``);
+        res.status(204).end();
+      });
 });
 
 

@@ -7,9 +7,7 @@ const recipeSchema = mongoose.Schema({
   cuisine: {type: String},
   ingredients: {type: String},
   steps: {type: String},
-  servings: {type: String},
-  servingsize: {type: String}
-
+  servings: {type: String}
 });
 
 recipeSchema.methods.apiRepr = function() {
@@ -21,8 +19,7 @@ recipeSchema.methods.apiRepr = function() {
     cuisine: this.cuisine,
     ingredients: this.ingredients,
     steps: this.steps,
-    servings: this.servings,
-    servingsize: this.servingsize
+    servings: this.servings
   };
 }
 
