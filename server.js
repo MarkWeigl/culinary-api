@@ -29,11 +29,11 @@ passport.use(jwtStrategy);
 app.use('/users/', usersRouter);
 app.use('/auth/', authRouter);
 
-app.get('/recipes', 
+app.get('/recipes/:user', 
   passport.authenticate('jwt', {session: false}),
   (req, res) => {
     Recipes
-      .find()
+      .find({user: req.params.user})
       .exec()
       .then(recipes => {
         res.json(recipes)
@@ -73,6 +73,7 @@ app.post('/recipes',
 
     Recipes
       .create({
+        user: req.body.user,
         name: req.body.name,
         description: req.body.description,
         course: req.body.course,
