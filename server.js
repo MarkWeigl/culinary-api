@@ -44,7 +44,7 @@ app.get('/recipes/:user',
       });
 });
 
-app.get('/recipes/:id', 
+app.get('/recipes/details/:id', 
   passport.authenticate('jwt', {session: false}),
     (req, res) => {
     Recipes
