@@ -26,7 +26,6 @@ function seedRecipeData() {
   const seedData = [];
   for (let i=1; i<=10; i++) {
     seedData.push({
-      user: faker.lorem.text(),
       name: faker.lorem.text(),
       description: faker.lorem.text(),
       course: faker.lorem.text(),
@@ -64,6 +63,7 @@ describe('Recipes API resource', function() {
 
     it('should return all existing recipes', function() {
       let res;
+      const user = mark;
       return chai.request(app)
         .get('/recipes/:user')
         .then(_res => {
