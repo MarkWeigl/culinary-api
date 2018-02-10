@@ -64,7 +64,7 @@ describe('Recipes API resource', function() {
     it('should return all existing recipes', function() {
       let res;
       return chai.request(app)
-        .get('/recipes')
+        .get('/recipes/:user')
         .then(_res => {
           res = _res;
           res.should.have.status(200);
