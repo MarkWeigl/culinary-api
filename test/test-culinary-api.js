@@ -43,11 +43,39 @@ function seedRecipeData() {
 
 describe('Recipes API resource', function() {
 
+  const username  = "exampleUser";
+  const passport = "examplePassword";
+  const firstName = "Example";
+  const lastName = "User";
+  const token = jwt.sign(
+    {
+      user: {
+        username,
+        firstName,
+        lastName
+      }
+    },
+    JWT_SECRET,
+    {
+      algorithm: "HS256",
+      subject: "username",
+      expiresIn: "7d"
+    }
+  );
+
   before(function() {
     return runServer(TEST_DATABASE_URL);
   });
 
   beforeEach(function() {
+    User.hashPassword(password).then(password =>
+      User.create({
+        username,
+        password,
+        firstName,
+        lastName
+      })
+    );
     return seedRecipeData();
   });
 
@@ -63,9 +91,9 @@ describe('Recipes API resource', function() {
 
     it('should return all existing recipes', function() {
       let res;
-      const user = mark;
       return chai.request(app)
         .get('/recipes/:user')
+        .set('authorization',`Bearer ${token}`)
         .then(_res => {
           res = _res;
           res.should.have.status(200);
@@ -81,7 +109,7 @@ describe('Recipes API resource', function() {
     it('should return posts with right fields', function(){ 
       let resPost;
       return chai.request(app)
-        .get('/recipes')
+        .get('/recipes/:user')
         .then(function(res) {
 
           res.should.have.status(200);
