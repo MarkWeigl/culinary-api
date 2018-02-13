@@ -1,14 +1,19 @@
+require("dotenv").config();
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const should = chai.should();
 
-const {DATABASE_URL} = require('../config');
+global.DATABASE_URL = "mongodb://localhost/recipes-test";
 const {Recipes} = require('../models');
 const {closeServer, runServer, app} = require('../server');
 const {TEST_DATABASE_URL} = require('../config');
+const {JWT_SECRET} = require('../config');
+const {User} = require('../users');
+
 
 chai.use(chaiHttp);
 
@@ -44,7 +49,7 @@ function seedRecipeData() {
 describe('Recipes API resource', function() {
 
   const username  = "exampleUser";
-  const passport = "examplePassword";
+  const password = "examplePassword";
   const firstName = "Example";
   const lastName = "User";
   const token = jwt.sign(
@@ -64,7 +69,7 @@ describe('Recipes API resource', function() {
   );
 
   before(function() {
-    return runServer(TEST_DATABASE_URL);
+    return runServer(global.DATABASE_URL);
   });
 
   beforeEach(function() {
@@ -92,7 +97,7 @@ describe('Recipes API resource', function() {
     it('should return all existing recipes', function() {
       let res;
       return chai.request(app)
-        .get('/recipes/:user')
+        .get(`/recipes/${username}`)
         .set('authorization',`Bearer ${token}`)
         .then(_res => {
           res = _res;
