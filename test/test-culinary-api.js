@@ -31,6 +31,7 @@ function seedRecipeData() {
   const seedData = [];
   for (let i=1; i<=10; i++) {
     seedData.push({
+      user: "exampleUser",
       name: faker.lorem.text(),
       description: faker.lorem.text(),
       course: faker.lorem.text(),
@@ -114,7 +115,8 @@ describe('Recipes API resource', function() {
     it('should return posts with right fields', function(){ 
       let resPost;
       return chai.request(app)
-        .get('/recipes/:user')
+        .get(`/recipes/${username}`)
+        .set('authorization',`Bearer ${token}`)
         .then(function(res) {
 
           res.should.have.status(200);
@@ -125,7 +127,7 @@ describe('Recipes API resource', function() {
           res.body.forEach(function(post) {
             post.should.be.a('object');
             post.should.include.keys('name','description', 'course', 'cuisine', 
-              'ingredients', 'steps', 'servings', 'servingsize');
+              'ingredients', 'steps', 'servings');
           });
           resPost = res.body[0];
           return Recipes.findById(resPost._id).exec();
@@ -138,8 +140,6 @@ describe('Recipes API resource', function() {
           resPost.ingredients.should.equal(post.ingredients);
           resPost.steps.should.equal(post.steps);
           resPost.servings.should.equal(post.servings);
-          resPost.servingsize.should.equal(post.servingsize);
-
         });
     });
   });
@@ -148,18 +148,19 @@ describe('Recipes API resource', function() {
       it('should add a new recipe', function() {
 
       const newRecipe = {
+          user: "exampleUser",
           name: faker.lorem.sentence(),
           description: faker.lorem.text(),
           course: faker.lorem.text(),
           cuisine: faker.lorem.text(),
           ingredients: faker.lorem.text(),
           steps: faker.lorem.text(),
-          servings: faker.lorem.text(),
-          servingsize: faker.lorem.text() 
+          servings: faker.lorem.text()
       };
 
       return chai.request(app)
         .post('/recipes')
+        .set('authorization',`Bearer ${token}`)        
         .send(newRecipe)
         .then(function(res) {
           res.should.have.status(201);
@@ -167,7 +168,7 @@ describe('Recipes API resource', function() {
           res.body.should.be.a('object');
           res.body.should.include.keys(
             'name', 'description', 'course', 'cuisine', 'ingredients', 'steps',
-            'servings', 'servingsize');
+            'servings');
           res.body.name.should.equal(newRecipe.name);
           res.body._id.should.not.be.null;
           res.body.description.should.equal(newRecipe.description);
@@ -181,7 +182,6 @@ describe('Recipes API resource', function() {
           post.ingredients.should.equal(newRecipe.ingredients);
           post.steps.should.equal(newRecipe.steps);
           post.servings.should.equal(newRecipe.servings);
-          post.servingsize.should.equal(newRecipe.servingsize);
         });
     });
   });
@@ -189,10 +189,10 @@ describe('Recipes API resource', function() {
   describe('PUT endpoint', function() {
 
       it('should update fields you send over', function() {
-      const updateData = {
-        name: 'eggs',
-        description: 'eggs for breakfast'
-      };
+        const updateData = {
+          name: 'eggs',
+          description: 'eggs for breakfast'
+        };
 
       return Recipes
         .findOne()
@@ -200,22 +200,24 @@ describe('Recipes API resource', function() {
         .then(post => {
           updateData.id = post._id;
 
-          return chai.request(app)
-            .put(`/recipes/${post._id}`)
+          return chai.request(app)                 
+            .put(`/recipes/${post._id}`)   
+            .set('authorization',`Bearer ${token}`)                             
             .send(updateData);
-        })
+          })
         .then(res => {
           res.should.have.status(200);
           res.should.be.json;
           res.body.should.be.a('object');
           res.body.name.should.equal(updateData.name);
           res.body.description.should.equal(updateData.description);
-          return Recipes.findById(res.body.id).exec();
+          return Recipes.findById(res.body._id).exec();
         })
         .then(post => {
           post.name.should.equal(updateData.name);
           post.description.should.equal(updateData.description);
         });
+
     });
   });
 
@@ -229,7 +231,9 @@ describe('Recipes API resource', function() {
         .exec()
         .then(_post => {
           post = _post;
-          return chai.request(app).delete(`/recipes/${post._id}`);
+          return chai.request(app)
+          .delete(`/recipes/${post._id}`)
+          .set('authorization',`Bearer ${token}`);
         })
         .then(res => {
           res.should.have.status(204);
