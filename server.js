@@ -107,7 +107,7 @@ app.delete('/recipes/:id',
 
 
 app.put('/recipes/:id', 
-
+  passport.authenticate('jwt', {session: false}),
   (req, res) => {
   if (!(req.params.id && req.body._id && req.params.id === req.body._id)) {
     res.status(400).json({
