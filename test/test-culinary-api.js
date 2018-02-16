@@ -186,41 +186,6 @@ describe('Recipes API resource', function() {
     });
   });
 
-  describe('PUT endpoint', function() {
-
-      it('should update fields you send over', function() {
-        const updateData = {
-          name: 'eggs',
-          description: 'eggs for breakfast'
-        };
-
-      return Recipes
-        .findOne()
-        .exec()
-        .then(post => {
-          updateData.id = post._id;
-
-          return chai.request(app)                 
-            .put(`/recipes/${post._id}`)   
-            .set('authorization',`Bearer ${token}`)                             
-            .send(updateData);
-          })
-        .then(res => {
-          res.should.have.status(200);
-          res.should.be.json;
-          res.body.should.be.a('object');
-          res.body.name.should.equal(updateData.name);
-          res.body.description.should.equal(updateData.description);
-          return Recipes.findById(res.body._id).exec();
-        })
-        .then(post => {
-          post.name.should.equal(updateData.name);
-          post.description.should.equal(updateData.description);
-        });
-
-    });
-  });
-
   describe('DELETE endpoint', function() {
       it('should delete a recipe by id', function() {
 
